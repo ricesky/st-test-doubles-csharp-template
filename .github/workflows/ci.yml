@@ -1,0 +1,96 @@
+name: CI - Test Doubles Assignment
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test with Coverlet (line + branch)
+        run: dotnet test TestDoubles.sln -c Release --no-build -p:CollectCoverage=true -p:CoverletOutput=TestResults/coverage.xml -p:CoverletOutputFormat=cobertura -p:IncludeBranchCoverage=true
+
+      - name: Generate Coverage Report + Badges
+        shell: bash
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          export PATH="$PATH:$HOME/.dotnet/tools"
+
+          # Buat laporan + badges
+          reportgenerator \
+            "-reports:**/TestResults/**/coverage*.xml" \
+            "-targetdir:coverage-report" \
+            "-reporttypes:Html;HtmlSummary;Badges"
+
+          # Siapkan folder badges di root repo
+          mkdir -p badges
+          # Copy badge line coverage
+          cp coverage-report/badge_linecoverage.svg badges/line-coverage.svg
+          cp coverage-report/badge_branchcoverage.svg badges/branch-coverage.svg
+    
+      - name: Commit badge (if changed)
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "ci: update coverage badge"
+          file_pattern: badges/*.svg
+    
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage-report
+
+      - name: Enforce Coverage Thresholds
+        shell: bash
+        run: |
+          set -e
+
+          # Cari file coverage dari coverlet (msbuild) atau collector
+          FILE=$(find . -type f -path "*/TestResults/*" -name "coverage*.xml" | head -1)
+          if [ -z "$FILE" ]; then
+            echo "No coverage*.xml found"; exit 1
+          fi
+          echo "Using coverage file: $FILE"
+
+          # Ambil rate (0..1). Jika atribut tidak ada, default 0
+          LINE_RATE=$(grep -oE 'line-rate="([0-9.]+)"' "$FILE" | head -1 | sed -E 's/.*="([0-9.]+)".*/\1/')
+          BRANCH_RATE=$(grep -oE 'branch-rate="([0-9.]+)"' "$FILE" | head -1 | sed -E 's/.*="([0-9.]+)".*/\1/')
+          LINE_RATE=${LINE_RATE:-0}
+          BRANCH_RATE=${BRANCH_RATE:-0}
+
+          # Konversi ke persen integer
+          LINE_PCT=$(python - <<EOF
+          rate=float("$LINE_RATE"); print(int(round(rate*100)))
+          EOF
+          )
+              BRANCH_PCT=$(python - <<EOF
+          rate=float("$BRANCH_RATE"); print(int(round(rate*100)))
+          EOF
+          )
+
+              echo "Line coverage:   ${LINE_PCT}%"
+              echo "Branch coverage: ${BRANCH_PCT}%"
+
+              # Threshold
+              [ "$LINE_PCT" -ge 80 ]   || { echo "Line coverage < 80%"; exit 1; }
+              [ "$BRANCH_PCT" -ge 70 ] || { echo "Branch coverage < 70%"; exit 1; }
+
+
