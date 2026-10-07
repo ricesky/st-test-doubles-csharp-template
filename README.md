@@ -154,18 +154,11 @@ Dalam pengujian, Anda akan mengombinasikan **Mock (Moq)** dan **Spy**.
    Setelah push, **GitHub Actions** akan otomatis:
 
    * Menjalankan test
-   * Menghitung **line & branch coverage**
-   * Memperbarui badge coverage di README
 
 6. **Tujuan akhir**
 
    * Semua test lulus ✅
-   * Coverage badge berwarna **hijau** 🟢
    * Tidak ada modifikasi di folder `src/`
-
----
-
-> ⚠️ **Penting:** Anda **hanya** menulis/menambah kode di folder `tests/`. Folder `src/` adalah konteks sistem yang diuji dan **tidak boleh diubah**.
 
 ---
 
