@@ -1,6 +1,6 @@
-![.NET](https://img.shields.io/badge/.NET-8.0-blue)
-![Line Coverage](badges/line-coverage.svg)
-![Branch Coverage](badges/branch-coverage.svg)
+![.NET](https://img.shields.io/badge/.NET-10.0-blue)
+![C%23](https://img.shields.io/badge/C%23-14-purple)
+![NUnit](https://img.shields.io/badge/NUnit-4.x-green)
 
 # st-test-doubles-csharp  
 # Menulis Unit Test dengan Test Doubles (C# + NUnit + Moq)
@@ -38,8 +38,7 @@ Setelah menyelesaikan tugas ini, mahasiswa mampu:
 ---
 
 ## Lingkungan Pengembangan
-- **SDK:** .NET 8.0 (LTS)  
-- **Target Framework:** net8.0  
+- **SDK:** .NET 10.0  
 - **IDE:** Visual Studio / VS Code  
 - **Struktur:** standar Visual Studio (`src/` dan `tests/`)  
 - **Perintah utama:**
