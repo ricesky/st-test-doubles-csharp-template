@@ -156,7 +156,6 @@ Dalam pengujian, Anda akan mengombinasikan **Mock (Moq)** dan **Spy**.
    * Menjalankan test
    * Menghitung **line & branch coverage**
    * Memperbarui badge coverage di README
-   * Gagal jika coverage < 80% (line) atau < 70% (branch)
 
 6. **Tujuan akhir**
 
