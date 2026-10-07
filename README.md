@@ -19,14 +19,11 @@ Setelah menyelesaikan tugas ini, mahasiswa mampu:
 2. Membedakan jenis-jenis Test Double (Dummy, Stub, Fake, Spy, Mock) beserta fungsinya.  
 3. Menggunakan **Moq** untuk membuat dan memverifikasi Mock Object.  
 4. Mengimplementasikan pengujian **state-based** dan **behavior-based** secara tepat.  
-5. Menulis unit test dengan cakupan minimal **80% line coverage** dan **70% branch coverage**.  
-6. Menggunakan pipeline **GitHub Actions** untuk otomatisasi pengujian dan pelaporan coverage.
 
 ---
 
 ## Target
 - Menulis unit test yang mengisolasi SUT menggunakan **Dummy, Stub, Fake, Spy, Mock**.
-- Mencapai **line coverage ≥ 80%** dan **branch coverage ≥ 70%** (diperiksa CI).
 - Memahami kapan memakai Stub/Fake (state-based) vs Spy/Mock (behavior-based).
 
 ---
@@ -54,15 +51,15 @@ Setelah menyelesaikan tugas ini, mahasiswa mampu:
 
 ### PriceService – menggunakan IExchangeRate
 
-Layanan ini bertugas mengonversi harga barang dari mata uang USD ke IDR dengan memanfaatkan dependensi `IExchangeRate`. Dalam kondisi nyata, service ini mungkin memanggil API kurs eksternal. Namun, untuk pengujian unit, kamu akan mengganti dependensi tersebut dengan **Stub** yang selalu mengembalikan nilai kurs tertentu, misalnya 1 USD = 15.000 IDR. Dengan cara ini, hasil konversi menjadi deterministik dan mudah diverifikasi tanpa bergantung pada sumber data eksternal.
+Layanan ini bertugas mengonversi harga barang dari mata uang USD ke IDR dengan memanfaatkan dependensi `IExchangeRate`. Dalam kondisi nyata, service ini mungkin memanggil API kurs eksternal. Namun, untuk pengujian unit, Anda akan mengganti dependensi tersebut dengan **Stub** yang selalu mengembalikan nilai kurs tertentu, misalnya 1 USD = 15.000 IDR. Dengan cara ini, hasil konversi menjadi deterministik dan mudah diverifikasi tanpa bergantung pada sumber data eksternal.
 
 ### RegistrationService – menggunakan IUserRepository
 
-Layanan ini bertanggung jawab untuk mendaftarkan user baru ke dalam sistem. Ia menggunakan `IUserRepository` untuk menambah dan mencari data user. Dalam implementasi sebenarnya, repository mungkin terhubung dengan database. Untuk keperluan pengujian, kamu akan membuat **Fake Repository** sederhana berbasis in-memory yang dapat menyimpan dan mencari user tanpa perlu koneksi ke database sungguhan. Dengan pendekatan ini, kamu dapat menguji logika pendaftaran—misalnya, menolak username yang sudah terdaftar—secara cepat dan terisolasi.
+Layanan ini bertanggung jawab untuk mendaftarkan user baru ke dalam sistem. Ia menggunakan `IUserRepository` untuk menambah dan mencari data user. Dalam implementasi sebenarnya, repository mungkin terhubung dengan database. Untuk keperluan pengujian, Anda akan membuat **Fake Repository** sederhana berbasis in-memory yang dapat menyimpan dan mencari user tanpa perlu koneksi ke database sungguhan. Dengan pendekatan ini, Anda dapat menguji logika pendaftaran—misalnya, menolak username yang sudah terdaftar—secara cepat dan terisolasi.
 
 ### OrderService – menggunakan IEmailService, IPaymentGateway, dan ILogger
 
-Layanan ini menangani proses pemesanan barang. Saat pesanan dibuat, service akan mencoba melakukan pembayaran melalui `IPaymentGateway`. Jika pembayaran berhasil, service mengirim email konfirmasi kepada pelanggan melalui `IEmailService`. Jika pembayaran gagal, ia akan mencatat pesan kesalahan menggunakan `ILogger`. Dalam pengujian, kamu akan menggunakan **Mock (Moq)** untuk memverifikasi bahwa `IEmailService` dan `IPaymentGateway` dipanggil dengan benar, serta **Spy** untuk memastikan `ILogger` benar-benar mencatat pesan saat transaksi gagal. Tujuannya agar pengujian tidak hanya memeriksa hasil akhir, tetapi juga memastikan interaksi antar komponen terjadi sebagaimana mestinya.
+Layanan ini menangani proses pemesanan barang. Saat pesanan dibuat, service akan mencoba melakukan pembayaran melalui `IPaymentGateway`. Jika pembayaran berhasil, service mengirim email konfirmasi kepada pelanggan melalui `IEmailService`. Jika pembayaran gagal, ia akan mencatat pesan kesalahan menggunakan `ILogger`. Dalam pengujian, Anda akan menggunakan **Mock (Moq)** untuk memverifikasi bahwa `IEmailService` dan `IPaymentGateway` dipanggil dengan benar, serta **Spy** untuk memastikan `ILogger` benar-benar mencatat pesan saat transaksi gagal. Tujuannya agar pengujian tidak hanya memeriksa hasil akhir, tetapi juga memastikan interaksi antar komponen terjadi sebagaimana mestinya.
 
 ---
 
@@ -71,7 +68,7 @@ Layanan ini menangani proses pemesanan barang. Saat pesanan dibuat, service akan
 ### PriceService – menggunakan IExchangeRate
 
 Service ini bertugas mengonversi nilai mata uang dari USD ke IDR.
-Dalam pengujian, kamu akan membuat **Stub** untuk `IExchangeRate` agar selalu mengembalikan kurs tertentu.
+Dalam pengujian, Anda akan membuat **Stub** untuk `IExchangeRate` agar selalu mengembalikan kurs tertentu.
 Gunakan skenario berikut sebagai dasar penulisan test:
 
 1. **Kurs tetap**
@@ -89,7 +86,7 @@ Gunakan skenario berikut sebagai dasar penulisan test:
 ### RegistrationService – menggunakan IUserRepository
 
 Service ini mendaftarkan user baru dan menolak username yang sudah ada.
-Dalam pengujian, kamu akan membuat **Fake Repository (in-memory)** untuk menyimpan data user.
+Dalam pengujian, Anda akan membuat **Fake Repository (in-memory)** untuk menyimpan data user.
 
 1. **Pendaftaran baru berhasil**
    Jika repository kosong dan user baru didaftarkan, service harus mengembalikan `true`. *Gunakan Fake repository dan periksa bahwa user tersimpan.*
@@ -105,7 +102,7 @@ Dalam pengujian, kamu akan membuat **Fake Repository (in-memory)** untuk menyimp
 ### OrderService – menggunakan IEmailService, IPaymentGateway, dan ILogger
 
 Service ini menangani proses pemesanan dan mengandalkan beberapa dependensi.
-Dalam pengujian, kamu akan mengombinasikan **Mock (Moq)** dan **Spy**.
+Dalam pengujian, Anda akan mengombinasikan **Mock (Moq)** dan **Spy**.
 
 1. **Pembayaran berhasil → kirim email konfirmasi**
    Jika `IPaymentGateway.Charge()` mengembalikan `true`, service harus:
